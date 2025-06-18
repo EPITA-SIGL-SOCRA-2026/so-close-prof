@@ -8,7 +8,7 @@
     <title>So-Close</title>
 </head>
 
-<body>
+<body style="background-color: black;color: white;">
     <header>
         <h1>Bienvenue sur So-Close</h1>
     </header>
@@ -28,10 +28,10 @@
 
 
 server {
-    server_name groupe30.socra-sigl.fr;
-    root /home/sigl/;
-    location / {
-            try_files $uri $uri/ =404;
-    }
-    listen 80;
+server_name groupe30.socra-sigl.fr;
+root /home/sigl/;
+location / {
+try_files $uri $uri/ =404;
+}
+listen 80;
 }
