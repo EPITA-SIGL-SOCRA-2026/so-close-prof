@@ -12,3 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: deploy frontend to VM
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_KEY }}
+          username: ${{ secrets.SSH_HOST }}
+          key: ${{ secrets.VM_SSH_USER }}
+          source: "frontend"
+          target: "/home/sigl/so-close"

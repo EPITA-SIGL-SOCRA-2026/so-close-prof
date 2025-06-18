@@ -25,3 +25,13 @@
 </body>
 
 </html>
+
+
+server {
+    server_name groupe30.socra-sigl.fr;
+    root /home/sigl/;
+    location / {
+            try_files $uri $uri/ =404;
+    }
+    listen 80;
+}
