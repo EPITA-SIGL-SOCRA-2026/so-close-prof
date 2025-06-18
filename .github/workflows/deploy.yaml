@@ -17,6 +17,6 @@ jobs:
         with:
           host: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.SSH_HOST }}
-          key: ${{ secrets.VM_SSH_USER }}
+          key: ${{ secrets.SSH_USER }}
           source: "frontend"
           target: "/home/sigl/so-close"
