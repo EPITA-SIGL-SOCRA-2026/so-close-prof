@@ -1,0 +1,30 @@
+
+.navbar {
+  background-color: #e0f0dc;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 1rem;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #2f532f;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.done label {
+  text-decoration: line-through;
+  color: #888;
+}

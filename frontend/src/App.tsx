@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { Layout } from "./Layout";
+import { TaskPlanner } from "./TaskPlanner";
+import { TaskToDo } from "./TasksToDo";
+
+type NavigationView = "planifier" | "todo";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // parser URL '#' suffix for routing
+
+  const [selectedView, setSelectedView] =
+    React.useState<NavigationView>("todo");
+
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash === "planifier") {
+        setSelectedView("planifier");
+      } else {
+        setSelectedView("todo");
+      }
+    };
+    // Initial check
+    handleHashChange();
+    // Listen for hash changes
+    window.addEventListener("hashchange", handleHashChange);
+    // Cleanup listener on unmount
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Layout>
+      {selectedView === "planifier" ? <TaskPlanner /> : <TaskToDo />}
+    </Layout>
+  );
 }
 
-export default App
+export default App;
