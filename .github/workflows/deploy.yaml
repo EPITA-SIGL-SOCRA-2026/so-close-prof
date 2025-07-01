@@ -12,11 +12,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Node.js from nvm file
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/.nvmrc
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --if-present
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
       - name: deploy frontend to VM
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "frontend"
+          source: "frontend/dist"
           target: "/home/sigl/so-close"
