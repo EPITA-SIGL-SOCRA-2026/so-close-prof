@@ -23,6 +23,9 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
+      - name: Replace api-info.json domain
+        run: |
+          echo '{"domain": "http://api.so-close.groupe30.socra-sigl.fr"}' > frontend/dist/api-info.json
       - name: deploy frontend to VM
         uses: appleboy/scp-action@v1
         with:
