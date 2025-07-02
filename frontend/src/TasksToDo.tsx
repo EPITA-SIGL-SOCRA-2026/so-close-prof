@@ -1,6 +1,7 @@
 import React from "react";
 import "./TaskPlanner.css";
 import { getApiDomain } from "./api";
+import { useFeatureIsOn } from "@growthbook/growthbook-react";
 
 interface Task {
   id: number;
@@ -45,10 +46,14 @@ export function TaskToDo() {
     return acc;
   }, {});
 
+  const ecoDesignActif = useFeatureIsOn("eco-design-active");
+  console.log("État de l'éco-design :", { ecoDesignActif });
+
   return loading ? (
     <span>Chargement des tâches...</span>
   ) : (
     <div className="task-planner">
+      {ecoDesignActif && <p>🌱 Éco-design activé !</p>}
       <h1>Tâches planifiées</h1>
       {Object.entries(groupedTasks).map(([date, dayTasks]) => (
         <div key={date} className="task-day">

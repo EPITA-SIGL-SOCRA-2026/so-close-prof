@@ -2,10 +2,13 @@ import React from "react";
 import { Layout } from "./Layout";
 import { TaskPlanner } from "./TaskPlanner";
 import { TaskToDo } from "./TasksToDo";
+import { GrowthBookProvider } from "@growthbook/growthbook-react";
+import { growthbook } from "./FeatureToggle";
+import type { User } from "./SelectUser";
 
 type NavigationView = "planifier" | "todo";
 
-function App() {
+function App({ user }: { user: User }) {
   // parser URL '#' suffix for routing
 
   const [selectedView, setSelectedView] =
@@ -30,10 +33,21 @@ function App() {
     };
   }, []);
 
+  React.useEffect(() => {
+    growthbook.init({ streaming: true });
+    growthbook.setAttributes({
+      userId: user.id,
+      userName: user.name,
+      userAge: user.age,
+    });
+  }, [user]);
+
   return (
-    <Layout>
-      {selectedView === "planifier" ? <TaskPlanner /> : <TaskToDo />}
-    </Layout>
+    <GrowthBookProvider growthbook={growthbook}>
+      <Layout>
+        {selectedView === "planifier" ? <TaskPlanner /> : <TaskToDo />}
+      </Layout>
+    </GrowthBookProvider>
   );
 }
 

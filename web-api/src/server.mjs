@@ -3,7 +3,7 @@ import cors from "cors";
 import tasks from "../../data/tasks.json" with { type: "json" };
 
 const app = express();
-const port = 3000;
+const port = 3003;
 
 app.use(cors()); // Enable CORS for all routes
 
