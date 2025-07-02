@@ -1,5 +1,6 @@
 import React from "react";
 import "./TaskPlanner.css";
+import { getApiDomain } from "./api";
 
 interface Task {
   id: number;
@@ -8,14 +9,27 @@ interface Task {
   done: boolean;
 }
 
-const initialTasks: Task[] = [
-  { id: 1, title: "Arroser le jardin", date: "2025-06-26", done: false },
-  { id: 2, title: "Planter les tomates", date: "2025-06-26", done: false },
-  { id: 3, title: "Tailler les haies", date: "2025-06-27", done: false },
-];
-
 export function TaskToDo() {
-  const [tasks, setTasks] = React.useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = React.useState<Task[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const domain = await getApiDomain();
+        const response = await fetch(`${domain}/v1/tasks`);
+        const tasks = await response.json();
+        setTasks(tasks);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des tâches :", error);
+        setTasks([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTasks();
+  }, []);
 
   const toggleDone = (id: number) => {
     setTasks(
@@ -31,7 +45,9 @@ export function TaskToDo() {
     return acc;
   }, {});
 
-  return (
+  return loading ? (
+    <span>Chargement des tâches...</span>
+  ) : (
     <div className="task-planner">
       <h1>Tâches planifiées</h1>
       {Object.entries(groupedTasks).map(([date, dayTasks]) => (
