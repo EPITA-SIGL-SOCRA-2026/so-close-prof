@@ -8,13 +8,13 @@ export function Layout({ children }: React.PropsWithChildren<{}>) {
   const [authError, setAuthError] = React.useState<string | null>(null);
 
   async function grantAuthrizationCode() {
-    const CLIENT_ID = "VOTRE CLIENT_ID ICI"; // Remplacez par votre client ID GitHub
+    const CLIENT_ID = "Ov23liEVNLYysI9idgNY"; // Remplacez par votre client ID GitHub
     const loginUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`;
     window.location.href = loginUrl;
   }
 
   async function getUserInfo(code: string) {
-    const response = await fetch("/api/auth/github/callback", {
+    const response = await fetch("/api/auth/github/userinfo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
