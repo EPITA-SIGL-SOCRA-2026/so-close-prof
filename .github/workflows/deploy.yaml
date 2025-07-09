@@ -26,6 +26,24 @@ jobs:
       - name: Replace api-info.json domain
         run: |
           echo '{"domain": "https://api.so-close.groupe30.socra-sigl.fr"}' > frontend/dist/api-info.json
+
+      - name: Deploy backend files to VM
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "web-api"
+          target: "/home/sigl/so-close"
+      - name: restart backend service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            sudo systemctl restart so-close-web-api.service
+
       - name: deploy frontend to VM
         uses: appleboy/scp-action@v1
         with:
