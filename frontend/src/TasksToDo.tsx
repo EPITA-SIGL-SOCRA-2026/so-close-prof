@@ -1,6 +1,7 @@
 import React from "react";
 import "./TaskPlanner.css";
 import { getApiDomain } from "./api";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface Task {
   id: number;
@@ -12,12 +13,19 @@ interface Task {
 export function TaskToDo() {
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const { getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
     async function fetchTasks() {
       try {
         const domain = await getApiDomain();
-        const response = await fetch(`${domain}/v1/tasks`);
+        const tokenResponse = await getAccessTokenSilently();
+        const response = await fetch(`${domain}/v1/tasks`, {
+          headers: {
+            Authorization: `Bearer ${tokenResponse}`,
+            "Content-Type": "application/json",
+          },
+        });
         const tasks = await response.json();
         setTasks(tasks);
       } catch (error) {
