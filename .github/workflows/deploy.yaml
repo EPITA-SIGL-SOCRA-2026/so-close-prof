@@ -35,13 +35,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "web-api"
           target: "/home/sigl/so-close"
-      - name: restart backend service
+      - name: install node modules and restart backend service
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            cd /home/sigl/so-close/web-api
+            nvm use
+            npm install
             sudo systemctl restart so-close-web-api.service
 
       - name: deploy frontend to VM
