@@ -1,0 +1,51 @@
+name: Manage So-Close Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action to perform"
+        required: true
+        default: "create"
+        type: choice
+        options:
+          - destroy
+          - create
+
+jobs:
+  manage-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Sync the data folder to the server
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "data"
+          target: "/home/sigl/so-close/data"
+      - name: Execute action on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            if [ "${{ github.event.inputs.action }}" = "destroy" ]; then
+              echo "Destroying MongoDB with data..."
+              docker compose down -v
+            elif [ "${{ github.event.inputs.action }}" = "create" ]; then
+              echo "Creating data..."
+              cd /home/sigl/so-close/data
+              docker compose up -d
+              echo "Wait for MongoDB to start"
+              sleep 10
+              docker compose cp /home/sigl/so-close/data/tasks.json monogdb:/opt/tasks.json
+              docker compose exec -it mongodb mongoimport -u root -p example --db so-close --collection tasks --file=/opt/tasks.json --jsonArray --authenticationDatabase=admin
+            else
+              echo "Unknown action: ${{ github.event.inputs.action }}"
+              exit 1
+            fi
