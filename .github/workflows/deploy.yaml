@@ -42,6 +42,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            bash -l
             cd /home/sigl/so-close/web-api
             nvm use
             npm install
